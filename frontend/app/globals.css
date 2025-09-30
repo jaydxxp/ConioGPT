@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+body{
+  background: oklch(27.4% 0.006 286.033);
+}
+html,body,
+:root{
+  height: 100vh
+}
