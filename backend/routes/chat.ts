@@ -11,7 +11,7 @@ export default router.post("/newchat",Authmiddleware,async(req,res,next)=>{
     const interaction=new Interaction({prompt,response})
     await interaction.save();
     return res.json({
-        response
+        response,prompt
     })
 })
 

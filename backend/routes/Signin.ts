@@ -30,7 +30,6 @@ export default router.post("/signin",async(req,res,next)=>{
             userid:user._id
         },process.env.JWT)
     return res.status(200).json({
-        message:"Logged in Successfully",
-        user,token
+        message:"Logged in Successfully",user,token:`Bearer ${token}`
     })
 })

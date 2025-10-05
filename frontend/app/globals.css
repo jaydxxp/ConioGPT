@@ -1,10 +1,40 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@custom-variant white (&:is(.dark *));
+
 body{
-  background: oklch(27.4% 0.006 286.033);
+  background: black;
 }
 html,body,
 :root{
   height: 100vh
+}
+
+@keyframes scan {
+  0% {
+    left: -400px; /* start off-screen */
+  }
+  100% {
+    left: 100%; /* move all the way across */
+  }
+}
+
+.scan-line {
+  position: absolute;
+  top: 35%;
+  height: 15rem;
+  width: 0.8px;
+  background: linear-gradient(to bottom, transparent, #0ff, transparent);
+  animation: scan 8s linear infinite;
+  z-index: 40;
+}
+
+@import "tailwindcss";
+
+@theme inline {
+  --shadow-input:
+    0px 2px 3px -1px rgba(0, 0, 0, 0.1),
+    0px 1px 0px 0px rgba(25, 28, 33, 0.02),
+    0px 0px 0px 1px rgba(25, 28, 33, 0.08);
 }
