@@ -12,6 +12,7 @@ export interface SSignup extends Document{
     name:string;
     email:string;
     password:string;
+    googleid:string;
 }
 
 const InteractionSchema: Schema<IInteraction> = new Schema(
@@ -31,27 +32,42 @@ const InteractionSchema: Schema<IInteraction> = new Schema(
 );
 const SignupSchema:Schema<SSignup>= new Schema(
     {
-        name:{
-            type:String,
-            required:true,
-        },
-        username:{
-            type:String,
-            required:true,
-            unique:true
-        },
-        email:{
-            type:String,
-            required:true,
-            unique:true
-        },
-        password:{
-            type:String,
-            required:true,
-            min:3,
-            max:12
-        }
+  name: {
+    type: String,
+    required: function() {
+      // name required only if not using google oauth
+      return !this.googleid;
     }
+  },
+  username: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
+  email: {
+    type: String,
+    required: function() {
+      // email required only if not using google oauth
+      return !this.googleid;
+    },
+    unique: true,
+    sparse: true
+  },
+  password: {
+    type: String,
+    minlength: 3,
+    maxlength: 12,
+    required: function() {
+      // password required only if not google oauth
+      return !this.googleid;
+    }
+  },
+  googleid: {
+    type: String,
+    unique: true,
+    sparse: true
+  }
+}
 )
 const Interaction = mongoose.model<IInteraction>("Interaction", InteractionSchema);
 const Signup = mongoose.model<SSignup>("Signup", SignupSchema);
