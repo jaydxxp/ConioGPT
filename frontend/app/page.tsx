@@ -12,7 +12,7 @@ export default function HomePage() {
 
   return (
     <div>
-     <StarsBackground>
+    <BackgroundBeams/>
       <NavbarDemo/>
       <div className="flex flex-col items-center justify-center h-[30rem] space-y-6">
         <TypewriterEffectSmoothDemo/>
@@ -38,7 +38,7 @@ export default function HomePage() {
         <h1 className="text-stone-400 font-bold ">@ConioGPT </h1>
         </div>
       </div>
- </StarsBackground>
+
     </div>
   );
 }

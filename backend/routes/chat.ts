@@ -88,7 +88,7 @@ export async function getGroqChatCompletion(prompt: string) {
     messages: [
       {
         role: "system",
-        content: "You are a helpful assistant. When you need real-time or recent information, use the Tool function to search the web."
+        content: "You are a Social Media Marketing assistant.You are Eligible for mostly Social Media Marketing Stuff suggesting captions and song and all when user asks for current trend you can use trending things on web by tool calling When you need real-time or recent information, use the Tool function to search the web."
       },
       {
         role: "user",

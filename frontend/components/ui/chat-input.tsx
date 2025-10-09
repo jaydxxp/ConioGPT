@@ -50,17 +50,17 @@ function ChatInput({
 
 	return (
 		<ChatInputContext.Provider value={contextValue}>
-			<div
-				className={cn(
-					variant === "default" &&
-						"flex flex-col items-end w-100 p-2 rounded-3xl border border-input bg-zinc-800 text-white focus-within:ring-1 focus-within:ring-ring focus-within:outline-none",
-					variant === "unstyled" && "flex items-center gap-2 w-full",
-					className,
-				)}
-			>
-				{children}
-			</div>
-		</ChatInputContext.Provider>
+  <div
+    className={cn(
+      variant === "default" &&
+        "flex items-center w-full max-w-3xl mx-auto p-2 rounded-3xl border border-input bg-zinc-800 text-white focus-within:ring-1 focus-within:ring-ring focus-within:outline-none gap-2",
+      variant === "unstyled" && "flex items-center gap-2 w-full",
+      className
+    )}
+  >
+    {children}
+  </div>
+</ChatInputContext.Provider>
 	);
 }
 
@@ -87,7 +87,6 @@ function ChatInputTextArea({
 	const onSubmit = onSubmitProp ?? context.onSubmit;
 	const rows = context.rows ?? 1;
 
-	// Convert parent variant to textarea variant unless explicitly overridden
 	const variant =
 		variantProp ?? (context.variant === "default" ? "unstyled" : "default");
 
