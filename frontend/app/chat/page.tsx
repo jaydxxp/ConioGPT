@@ -1,5 +1,4 @@
 "use client";
-
 import { ChatInput, ChatInputSubmit, ChatInputTextArea } from "@/components/ui/chat-input";
 import axios from "axios";
 import { useState, useRef, useEffect } from "react";
@@ -8,6 +7,9 @@ import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github.css";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { NavbarDemo } from "@/components/Navbar";
+import { VoiceButton } from "@/components/Voice";
+import { Logbar } from "@/components/Logbar";
+
 
 interface Message {
   role: "user" | "assistant";
@@ -56,11 +58,11 @@ export default function Chat() {
   }, [messages, isLoading]);
 
   return (
+    <div className="h-min-screen">
+        
     <div className="relative flex flex-col min-h-screen bg-black">
-     
-      <NavbarDemo />
-
-
+      <BackgroundBeams/>
+      <Logbar/>
       <div className="flex flex-col flex-1 items-center w-full overflow-hidden">
 
         <div className="flex-1 w-full max-w-3xl overflow-y-auto px-4 py-6 space-y-6 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900">
@@ -108,11 +110,15 @@ export default function Chat() {
             loading={isLoading}
             onStop={() => setIsLoading(false)}
           >
-            <ChatInputTextArea placeholder="Type a message..." />
+            <ChatInputTextArea placeholder="Ask anything" />
+            <VoiceButton value={value} setValue={setValue} />
             <ChatInputSubmit />
           </ChatInput>
         </div>
       </div>
+          
+    </div>
+  
     </div>
   );
 }

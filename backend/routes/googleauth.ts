@@ -114,13 +114,13 @@ GoogleRouter.get("/google/callback", async (req, res) => {
     );
 
 
-    res.redirect(`${FRONTEND_URL}/chat`);
+    const redirectUrl = `${FRONTEND_URL.replace(/\/+$/, "")}/auth/google/success?token=${encodeURIComponent(token)}`;
+    return res.redirect(redirectUrl);
   } catch (err: any) {
     console.error("Google OAuth Error:", err.response?.data || err.message);
     res.redirect(`${FRONTEND_URL}/login?error=auth_failed`);
   }
 });
-
 
 GoogleRouter.get("/profile", async (req, res) => {
   try {

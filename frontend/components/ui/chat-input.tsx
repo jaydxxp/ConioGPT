@@ -18,7 +18,7 @@ interface ChatInputContextValue {
 	rows?: number;
 }
 
-const ChatInputContext = createContext<ChatInputContextValue>({});
+export const ChatInputContext = createContext<ChatInputContextValue>({});
 
 interface ChatInputProps extends Omit<ChatInputContextValue, "variant"> {
 	children: React.ReactNode;
