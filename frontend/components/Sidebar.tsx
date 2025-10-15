@@ -9,7 +9,7 @@ export default function Sidebar() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const BASE_URL = process.env.NEXT_PUBLIC_BackendURL?.replace(/\/?$/, "") ?? "http://localhost:3030";
+  const BASE_URL = process.env.NEXT_PUBLIC_BackendURL?.replace(/\/?$/, "") ?? "https://backend-n70l.onrender.com";
 
   const isValidObjectId = (id?: string | null) =>
     typeof id === "string" && /^[0-9a-fA-F]{24}$/.test(id);

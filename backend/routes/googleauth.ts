@@ -8,7 +8,7 @@ const GoogleRouter = express.Router();
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
-const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI || "http://localhost:3030/api/auth/google/callback";
+const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI || "https://backend-n70l.onrender.com/api/auth/google/callback";
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 const JWT_SECRET = process.env.JWT_SECRET || process.env.JWT!;
 
