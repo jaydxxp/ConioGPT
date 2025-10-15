@@ -2,7 +2,7 @@ import express from "express";
 import axios from "axios";
 import jwt from "jsonwebtoken";
 import qs from "querystring";
-import { Signup } from "../db/model.ts"; 
+import { User } from "../db/model.ts"; 
 
 const GoogleRouter = express.Router();
 
@@ -77,11 +77,11 @@ GoogleRouter.get("/google/callback", async (req, res) => {
     console.log("Google User Info:", userInfo);
 
 
-    let user = await Signup.findOne({ googleid: userInfo.sub });
+    let user = await User.findOne({ googleid: userInfo.sub });
 
     if (!user) {
    
-      user = await Signup.findOne({ email: userInfo.email });
+      user = await User.findOne({ email: userInfo.email });
 
       if (user) {
     
@@ -92,7 +92,7 @@ GoogleRouter.get("/google/callback", async (req, res) => {
         await user.save();
       } else {
   
-        user = await Signup.create({
+        user = await User.create({
           googleid: userInfo.sub,
           name: userInfo.name || "Google User",
           email: userInfo.email,
@@ -103,11 +103,13 @@ GoogleRouter.get("/google/callback", async (req, res) => {
     }
 
 
+
     const token = jwt.sign(
-      { 
-        userId: user._id.toString(), 
+      {
+        userid: user._id.toString(),   
+        userId: user._id.toString(),   
         email: user.email,
-        username: user.username 
+        username: user.username
       },
       JWT_SECRET,
       { expiresIn: "7d" }
@@ -133,7 +135,7 @@ GoogleRouter.get("/profile", async (req, res) => {
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
 
-    const user = await Signup.findById(decoded.userId).select("-password");
+    const user = await User.findById(decoded.userId).select("-password");
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });

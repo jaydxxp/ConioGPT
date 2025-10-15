@@ -1,5 +1,4 @@
-"use client"
-
+"use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -16,10 +15,9 @@ export default function GoogleSuccess() {
       window.history.replaceState({}, document.title, window.location.pathname);
       router.replace("/chat");
     } else {
-
       router.replace("/auth/signin");
     }
   }, [router]);
 
-  return <div>Signing you in...</div>;
+  return <div>Signing you in…</div>;
 }

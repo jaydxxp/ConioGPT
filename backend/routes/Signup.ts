@@ -1,7 +1,8 @@
 import express, { Router } from "express"
 import z from "zod"
 import jwt from "jsonwebtoken"
-import {Signup} from "../db/model.ts"
+import { User } from "../db/model.ts"
+
 const SignupBody=z.object({
     name:z.string(),
     username:z.string(),
@@ -17,7 +18,7 @@ export default router.post("/signup",async (req,res,next)=>{
             message:"Please Write Values in Given Format"
         })
     }
-    const ExistingUser= await Signup.findOne({
+    const ExistingUser= await User.findOne({
         username:req.body.username,
         email:req.body.email
     })
@@ -27,7 +28,7 @@ export default router.post("/signup",async (req,res,next)=>{
             message:"Username & Email should be unique"
         })
     }
-    const user=await Signup.create({
+    const user=await User.create({
         name:req.body.name,
         username:req.body.username,
         password:req.body.password,

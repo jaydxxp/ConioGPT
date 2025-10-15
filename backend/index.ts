@@ -13,6 +13,6 @@ app.use(cors());
 mongoose.connect(process.env.DBURL!)
 .then(()=>console.log("Mongoose Connected"))
 .catch((e)=>console.log(e))
-app.use("/chat",Chatrouter)
+app.use("/",Chatrouter)
 app.use("/api",Authrouter)
 app.listen(3030)

@@ -1,25 +1,40 @@
-// ...existing code...
-import jwt from "jsonwebtoken"
-import dotenv from "dotenv"
-dotenv.config()
+import jwt from "jsonwebtoken";
+import { User } from "../db/model.ts";
 
-export default function Authmiddleware(req: any, res: any, next: any) {
-  const authheader = req.headers.authorization || (req.headers as any).Authorization;
-  console.log("AUTH HEADER RECEIVED:", authheader);
-  if (!authheader) {
-    return res.status(401).json({ message: "NO Token Found" });
-  }
-
-
-  const token = authheader.startsWith("Bearer ") ? authheader.split(" ")[1] : authheader;
-
+const Authmiddleware = async (req, res, next) => {
   try {
-    const decoded: any = jwt.verify(token, process.env.JWT);
+    const authHeader = req.headers.authorization || "";
+    console.log("AUTH HEADER:", authHeader);
+    if (!authHeader) {
+      return res.status(401).json({ error: "No token provided" });
+    }
 
-    req.userid = decoded.userid ?? decoded.userId;
+    const token = authHeader.startsWith("Bearer ")
+      ? authHeader.split(" ")[1]
+      : authHeader;
+
+    if (!token) {
+      return res.status(401).json({ error: "No token provided" });
+    }
+
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+
+
+    const userId = decoded?.userid ?? decoded?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: "Invalid token payload" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(401).json({ error: "User not found" });
+    }
+    req.user = user;
     next();
-  } catch (e) {
-    console.error("Auth verify error:", e);
-    return res.status(403).json({ message: "Invalid token" });
+  } catch (error) {
+    console.error("Auth error:", error);
+    return res.status(401).json({ error: "Invalid token" });
   }
-}
+};
+
+export default Authmiddleware;

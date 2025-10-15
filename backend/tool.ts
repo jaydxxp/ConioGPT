@@ -1,4 +1,4 @@
-// tool.ts
+
 import dotenv from "dotenv";
 import { tavily } from "@tavily/core";
 

@@ -121,7 +121,7 @@ export function NavbarDemo() {
       </Navbar>
       <DummyContent />
 
-      {/* Navbar */}
+     
     </div>
   );
 }

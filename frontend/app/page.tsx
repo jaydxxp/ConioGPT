@@ -7,9 +7,21 @@ import { BackgroundBeams } from "@/components/ui/background-beams";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+  const router = useRouter();
 
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      e.preventDefault(); 
+      router.push(`/auth/signin`); 
+      return;
+    }
+   
+  };
   return (
     <div>
     <BackgroundBeams/>
@@ -20,7 +32,7 @@ export default function HomePage() {
           <Link href={"/chat"}>
             <HoverBorderGradient
               containerClassName="rounded-full"
-              as="button"
+              as="button" onClick={handleClick}
               className="dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2 cursor-pointer"
             >
               <span>Get Started for free</span>
