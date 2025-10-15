@@ -15,4 +15,8 @@ mongoose.connect(process.env.DBURL!)
 .catch((e)=>console.log(e))
 app.use("/",Chatrouter)
 app.use("/api",Authrouter)
-app.listen(3030)
+const PORT = Number(process.env.PORT) || 3030; 
+app.listen(PORT, "0.0.0.0", () =>
+  console.log(`Server running on port ${PORT}`)
+);
+
