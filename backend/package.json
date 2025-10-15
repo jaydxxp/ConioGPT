@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "ts-node index.ts",
-  "dev": "ts-node-dev index.ts"
+    "dev": "ts-node-dev index.ts"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +24,7 @@
     "mongoose": "^8.19.0",
     "openai": "^5.23.2",
     "tavily": "^1.0.2",
+    "ts-node": "^10.9.2",
     "zod": "^3.25.76"
   }
 }
