@@ -4,14 +4,13 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { cn } from "@/lib/utils";
 import {
-    IconBrandGit,
-  IconBrandGithub,
+
+
   IconBrandGoogle,
-  IconBrandOnlyfans,
+
 } from "@tabler/icons-react";
 import axios from "axios";
-import Link from "next/link";
-import { Router } from "next/router";
+
 import { useRouter } from "next/navigation";
 
 export function SignupFormDemo() {

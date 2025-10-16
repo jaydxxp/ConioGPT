@@ -2,7 +2,7 @@
 
 import { NavbarDemo } from "@/components/Navbar"
 import { SigninFormDemo } from "@/components/Signin"
-import { SignupFormDemo } from "@/components/Signup"
+
 import { BackgroundBeams } from "@/components/ui/background-beams"
 
 export default function Signup() {

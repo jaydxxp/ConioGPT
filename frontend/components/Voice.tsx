@@ -7,7 +7,7 @@ interface VoiceButtonProps {
   setValue: (text: string) => void;
 }
 
-export const VoiceButton: React.FC<VoiceButtonProps> = ({ value, setValue }) => {
+export const VoiceButton: React.FC<VoiceButtonProps> = ({  setValue }) => {
   const [listening, setListening] = useState(false);
   const [recognition, setRecognition] = useState<any>(null);
 

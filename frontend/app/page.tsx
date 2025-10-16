@@ -1,6 +1,5 @@
 "use client";
-import { StarsBackground } from "@/components/animate-ui/components/backgrounds/stars";
-import { Card, CardOg } from "@/components/Cards";
+import {  CardOg } from "@/components/Cards";
 import { NavbarDemo } from "@/components/Navbar";
 import TypewriterEffectSmoothDemo from "@/components/TypeWriter";
 import { BackgroundBeams } from "@/components/ui/background-beams";

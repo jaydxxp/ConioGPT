@@ -2,17 +2,17 @@
 import {
   Navbar,
   NavBody,
-  NavItems,
+
   MobileNav,
   NavbarLogo,
   NavbarButton,
   MobileNavHeader,
-  MobileNavToggle,
-  MobileNavMenu,
+
+
 } from "@/components/ui/resizable-navbar";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Sidebar from "./Sidebar";
+
 
 export function Logbar() {
   const router = useRouter();
