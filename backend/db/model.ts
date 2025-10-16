@@ -8,9 +8,6 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-/* -----------------------------------------------------
-   🧍 USER INTERFACES & SCHEMA
------------------------------------------------------ */
 export interface IUser extends Document {
   _id: mongoose.Types.ObjectId;
   username?: string;
@@ -35,7 +32,7 @@ const UserSchema = new Schema<IUser>(
     },
     email: {
       type: String,
-      required: function () {
+      required: function (this:IUser) {
         return !this.googleid;
       },
       unique: true,
@@ -45,7 +42,7 @@ const UserSchema = new Schema<IUser>(
       type: String,
       minlength: 3,
       maxlength: 12,
-      required: function () {
+      required: function (this:IUser) {
         return !this.googleid;
       },
     },

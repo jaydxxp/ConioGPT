@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
-import { User } from "../db/model.ts";
-
-const Authmiddleware = async (req, res, next) => {
+import { User } from "../db/model";
+import type { Request, Response } from "express";
+import type { NextFunction } from "express";
+const Authmiddleware = async (req:Request, res:Response,next:NextFunction) => {
   try {
     const authHeader = req.headers.authorization || "";
     console.log("AUTH HEADER:", authHeader);

@@ -1,10 +1,10 @@
 import express from "express";
 import Groq from "groq-sdk";
 import mongoose from "mongoose"; 
-import { User,Chat,Message } from "../db/model.ts";
-import type {IChatPopulatedLean, IUser} from "../db/model.ts"
-import Authmiddleware from "./middleware.ts";
-import { check } from "../tool.ts";
+import { User,Chat,Message } from "../db/model";
+import type {IChatPopulatedLean, IUser} from "../db/model"
+import Authmiddleware from "./middleware";
+import { check } from "../tool";
 
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });

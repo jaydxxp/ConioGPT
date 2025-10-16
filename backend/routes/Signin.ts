@@ -2,7 +2,7 @@
 import express from "express"
 import z from "zod"
 import jwt from "jsonwebtoken"
-import { User } from "../db/model.ts";
+import { User } from "../db/model";
 const SigninBody= z.object({
     username:z.string(),
     password:z.string().min(3).max(12)
@@ -28,7 +28,7 @@ export default router.post("/signin",async(req,res,next)=>{
     }
     const token=jwt.sign({
             userid:user._id
-        },process.env.JWT_SECRET)
+        },process.env.JWT_SECRET!)
     return res.status(200).json({
         message:"Logged in Successfully",user,token:`Bearer ${token}`
     })

@@ -3,9 +3,9 @@ import dotenv from "dotenv"
 import cors from "cors"
 import Groq from "groq-sdk";
 import mongoose from "mongoose";
-import Chatrouter from "./routes/chat.ts"
-import Authrouter from "./routes/index.ts"
-import Authmiddleware from "./routes/middleware.ts";
+import Chatrouter from "./routes/chat"
+import Authrouter from "./routes/index"
+import Authmiddleware from "./routes/middleware";
 dotenv.config();
 const app=express();
 app.use(express.json());

@@ -2,7 +2,7 @@ import express from "express";
 import axios from "axios";
 import jwt from "jsonwebtoken";
 import qs from "querystring";
-import { User } from "../db/model.ts"; 
+import { User } from "../db/model"; 
 
 const GoogleRouter = express.Router();
 

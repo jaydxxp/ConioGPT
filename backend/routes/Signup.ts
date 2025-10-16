@@ -1,7 +1,7 @@
 import express, { Router } from "express"
 import z from "zod"
 import jwt from "jsonwebtoken"
-import { User } from "../db/model.ts"
+import { User } from "../db/model"
 
 const SignupBody=z.object({
     name:z.string(),
@@ -38,7 +38,7 @@ export default router.post("/signup",async (req,res,next)=>{
     const userid=user._id;
     const token=jwt.sign({
         userid
-    },process.env.JWT);
+    },process.env.JWT_SECRET!);
     return res.status(200).json({
         message:"Account Created Successfully",token,user
     })
