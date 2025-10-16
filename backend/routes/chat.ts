@@ -138,8 +138,10 @@ A: #FitnessMotivation #WorkoutGoals #HealthyLifestyle #FitLife #GymTime`,
             const args = JSON.parse(toolCall.function.arguments);
             const searchQuery = args.query;
             
-            // Call your search function
-            const searchResult = await check(searchQuery);
+            // Call your search function with the correct parameter format
+            const searchResult = await check({
+              query: searchQuery
+            } as any);
             
             toolResults.push({
               role: "tool",
