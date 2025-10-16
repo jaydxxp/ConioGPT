@@ -1,19 +1,20 @@
 import express from "express";
 import Groq from "groq-sdk";
 import mongoose from "mongoose"; 
-import { User,Chat,Message } from "../db/model";
-import type {IChatPopulatedLean, IUser} from "../db/model"
+import { User, Chat, Message } from "../db/model";
+import type { IChatPopulatedLean, IUser } from "../db/model"
 import Authmiddleware from "./middleware";
 import { check } from "../tool";
 
-
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const router = express.Router();
+
 declare module "express-serve-static-core" {
   interface Request {
     user?: IUser;
   }
 }
+
 type ChatCompletionMessageParam =
   | { role: "system"; content: string }
   | { role: "user"; content: string }
@@ -26,7 +27,6 @@ router.post("/chat", Authmiddleware, async (req, res) => {
     const { prompt } = req.body || {};
 
     if (!req.user) return res.status(401).json({ error: "Unauthorized" });
-
 
     if (!prompt || prompt === "__new_chat__") {
       const chat = await Chat.create({ user: req.user._id, title: "New Chat" });
@@ -42,14 +42,12 @@ router.post("/chat", Authmiddleware, async (req, res) => {
     const userId = req.user._id;
     let chat;
 
-
     if (chatId) {
       chat = await Chat.findById(chatId);
       if (!chat) return res.status(404).json({ error: "Chat not found" });
     } else {
       chat = await Chat.create({ user: userId, title: "New Chat" });
     }
-
 
     const previousMessages = await Message.find({ chat: chat._id })
       .sort({ createdAt: 1 })
@@ -61,45 +59,126 @@ router.post("/chat", Authmiddleware, async (req, res) => {
       content: msg.content,
     }));
 
-
     conversation.push({ role: "user", content: prompt });
 
-
     const ans = await groq.chat.completions.create({
-  model: "llama-3.1-8b-instant",
-  messages: [
-    {
-      role: "system",
-      content:
-        "You are a helpful social media marketing assistant. Remember details shared by the user within this chat. Be friendly, concise, and professional.",
-    },
-    ...conversation,
-    { role: "user", content: prompt },
-  ] as ChatCompletionMessageParam[], 
-  tools: [
-    {
-      type: "function",
-      function: {
-        name: "Tool",
-        description: "Search the web for latest trends or real-time data.",
-        parameters: {
-          type: "object",
-          properties: {
-            query: {
-              type: "string",
-              description: "Search query",
+      model: "llama-3.1-8b-instant",
+      messages: [
+        {
+          role: "system",
+          content: `You are a smart social media assistant.
+
+If you know the answer to a question, answer it directly in plain English.
+
+If the answer requires real-time trends, local content, or up-to-date social media information, use the Tool function to search for it.
+
+When using the Tool function, you MUST provide ONLY the query parameter in this exact format:
+{"query": "your search query here"}
+
+Do NOT include any other fields like "name" or "description" in the tool call.
+
+Focus on helping with tasks like:
+- Generating captions, hashtags, or post ideas
+- Finding trending songs, memes, or challenges
+- Suggesting posting times or strategies based on trends
+- Recommending tools, apps, or platforms for social media growth
+
+Examples of CORRECT tool usage:
+User: "What are trending songs on TikTok?"
+Tool call: {"query": "trending TikTok songs 2025"}
+
+User: "Latest Instagram trends?"
+Tool call: {"query": "Instagram trends October 2025"}
+
+Examples of when to answer directly (no tool needed):
+Q: What's a catchy Instagram caption for a beach photo?
+A: "Sandy toes, sun-kissed nose 🌊☀️"
+
+Q: When is the best time to post on LinkedIn?
+A: Generally, Tuesday to Thursday mornings (8–10 AM) tend to get higher engagement.
+
+Q: Suggest some hashtags for a fitness post on Instagram.
+A: #FitnessMotivation #WorkoutGoals #HealthyLifestyle #FitLife #GymTime`,
+        },
+        ...conversation,
+      ] as ChatCompletionMessageParam[],
+      tools: [
+        {
+          type: "function",
+          function: {
+            name: "Tool",
+            description: "Search the web for latest trends or real-time data. Call this function with ONLY a query parameter.",
+            parameters: {
+              type: "object",
+              properties: {
+                query: {
+                  type: "string",
+                  description: "Search query for finding current trends, news, or real-time information",
+                },
+              },
+              required: ["query"],
+              additionalProperties: false,
             },
           },
-          required: ["query"],
         },
-      },
-    },
-  ],
-  tool_choice: "auto",
-});
+      ],
+      tool_choice: "auto",
+    });
 
-    let responseText = ans.choices[0].message?.content || "No content generated.";
+    let responseText = ans.choices[0].message?.content || "";
+    const toolCalls = ans.choices[0].message?.tool_calls;
 
+    // Handle tool calls if present
+    if (toolCalls && toolCalls.length > 0) {
+      const toolResults = [];
+      
+      for (const toolCall of toolCalls) {
+        if (toolCall.function.name === "Tool") {
+          try {
+            const args = JSON.parse(toolCall.function.arguments);
+            const searchQuery = args.query;
+            
+            // Call your search function
+            const searchResult = await check(searchQuery);
+            
+            toolResults.push({
+              role: "tool",
+              content: JSON.stringify(searchResult),
+              tool_call_id: toolCall.id,
+            });
+          } catch (error) {
+            console.error("Tool execution error:", error);
+            toolResults.push({
+              role: "tool",
+              content: JSON.stringify({ error: "Search failed" }),
+              tool_call_id: toolCall.id,
+            });
+          }
+        }
+      }
+
+      // Get final response with tool results
+      if (toolResults.length > 0) {
+        const followUp = await groq.chat.completions.create({
+          model: "llama-3.1-8b-instant",
+          messages: [
+            {
+              role: "system",
+              content: `You are a smart social media assistant. Use the search results to provide helpful, accurate answers about current trends.`,
+            },
+            ...conversation,
+            ans.choices[0].message,
+            ...toolResults,
+          ] as any,
+        });
+
+        responseText = followUp.choices[0].message?.content || "No content generated.";
+      }
+    }
+
+    if (!responseText) {
+      responseText = "No content generated.";
+    }
 
     const userMsg = await Message.create({
       chat: chat._id,
@@ -117,7 +196,6 @@ router.post("/chat", Authmiddleware, async (req, res) => {
       $push: { messages: { $each: [userMsg._id, botMsg._id] } },
     });
 
-
     res.json({
       chatId: chat._id,
       response: responseText,
@@ -128,7 +206,6 @@ router.post("/chat", Authmiddleware, async (req, res) => {
     res.status(500).json({ error: "Failed to process chat" });
   }
 });
-
 
 router.get("/chats", Authmiddleware, async (req, res) => {
   try {
@@ -144,7 +221,7 @@ router.get("/chats", Authmiddleware, async (req, res) => {
         options: { limit: 1, sort: { createdAt: -1 } },
         select: "content sender createdAt"
       })
-      .lean() as unknown as IChatPopulatedLean[];  
+      .lean() as unknown as IChatPopulatedLean[];
 
     const formattedChats = chats.map(chat => {
       const lastMsg = chat.messages.length > 0 ? chat.messages[0] : null;
@@ -193,7 +270,7 @@ router.get("/chat/:id", Authmiddleware, async (req, res) => {
         select: "content sender createdAt",
         options: { sort: { createdAt: 1 } }
       })
-      .lean() as IChatPopulatedLean | null;  
+      .lean() as IChatPopulatedLean | null;
 
     if (!chat) {
       return res.status(404).json({ error: "Chat not found" });
@@ -234,7 +311,6 @@ router.delete("/chat/:id", Authmiddleware, async (req, res) => {
     }
 
     await Message.deleteMany({ chat: chat._id });
-
     await Chat.findByIdAndDelete(chat._id);
 
     res.json({
@@ -246,7 +322,6 @@ router.delete("/chat/:id", Authmiddleware, async (req, res) => {
     res.status(500).json({ error: "Failed to delete chat" });
   }
 });
-
 
 router.patch("/chat/:id/title", Authmiddleware, async (req, res) => {
   try {
@@ -285,13 +360,14 @@ router.patch("/chat/:id/title", Authmiddleware, async (req, res) => {
     res.status(500).json({ error: "Failed to update chat title" });
   }
 });
+
 export async function getGroqChatCompletion(prompt: string) {
   console.log("Groq API called!");
   return groq.chat.completions.create({
     messages: [
       {
         role: "system",
-        content: "You are a Social Media Marketing assistant.You are Eligible for mostly Social Media Marketing Stuff suggesting captions and song and all when user asks for current trend you can use trending things on web by tool calling When you need real-time or recent information, use the Tool function to search the web."
+        content: "You are a Social Media Marketing assistant. When you need real-time or recent information, use the Tool function with ONLY a query parameter in format: {\"query\": \"your search here\"}. Do NOT include name or description fields."
       },
       {
         role: "user",
@@ -304,7 +380,7 @@ export async function getGroqChatCompletion(prompt: string) {
         type: "function",
         function: {
           name: "Tool",
-          description: "Search the web for latest information and real-time data. Use this when asked about current events, recent news, or information that may have changed.",
+          description: "Search the web for latest information and real-time data.",
           parameters: {
             type: "object",
             properties: {
@@ -313,7 +389,8 @@ export async function getGroqChatCompletion(prompt: string) {
                 description: "The search query to perform the web search"
               }
             },
-            required: ["query"]
+            required: ["query"],
+            additionalProperties: false
           }
         }
       }
