@@ -35,7 +35,7 @@ export default function ChatClient() {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const BASE_URL =
-    process.env.NEXT_PUBLIC_BackendURL?.replace(/\/?$/, "") ?? "http://localhost:3030";
+    process.env.NEXT_PUBLIC_BackendURL?.replace(/\/?$/, "");
 
 
   const getAuthHeader = () => {
