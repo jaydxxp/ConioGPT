@@ -8,7 +8,7 @@ const GoogleRouter = express.Router();
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
-const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI!;
+const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI! ;
 const FRONTEND_URL = process.env.FRONTEND_URL!;
 const JWT_SECRET = process.env.JWT_SECRET || process.env.JWT!;
 

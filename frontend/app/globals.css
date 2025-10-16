@@ -13,10 +13,10 @@ html,body,
 
 @keyframes scan {
   0% {
-    left: -400px; /* start off-screen */
+    left: -400px; 
   }
   100% {
-    left: 100%; /* move all the way across */
+    left: 100%; 
   }
 }
 
