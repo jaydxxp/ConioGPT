@@ -85,7 +85,7 @@ const Skeleton3 = () => {
 
   useEffect(() => {
     animate(sequence, {
-      // @ts-ignore
+      // @ts-expect-error
       repeat: Infinity,
       repeatDelay: 1,
     });
@@ -170,7 +170,7 @@ const Skeleton2 = () => {
 
   useEffect(() => {
     animate(sequence, {
-      // @ts-ignore
+      // @ts-expect-error
       repeat: Infinity,
       repeatDelay: 1,
     });
@@ -254,7 +254,7 @@ const Skeleton1 = () => {
 
   useEffect(() => {
     animate(sequence, {
-      // @ts-ignore
+      // @ts-expect-error
       repeat: Infinity,
       repeatDelay: 1,
     });

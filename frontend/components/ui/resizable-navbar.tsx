@@ -7,6 +7,7 @@ import {
   useScroll,
   useMotionValueEvent,
 } from "motion/react";
+import Link from "next/link";
 
 
 import React, { useRef, useState } from "react";
@@ -253,14 +254,14 @@ export const Chathistory = () => {
 };
 export const NavbarLogo = () => {
   return (
-    <a
+    <Link
       href="/"
       className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-lg font-bold text-black"
     >
       <span className="font-extrabold text-blue-500 dark:text-blue-500">
         ConioGPT
       </span>
-    </a>
+    </Link>
   );
 };
 
